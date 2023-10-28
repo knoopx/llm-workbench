@@ -2,44 +2,43 @@
 // import dedent from "dedent";
 export class Stream extends ReadableStream {
   async text() {
-    let text = "";
+    let text = ""
     for await (const chunk of this) {
-      text += chunk;
+      text += chunk
     }
-    return text;
+    return text
   }
 }
 
 export function llmx(strings: TemplateStringsArray, ...values: any[]) {
   const tokens = strings.raw
     .reduce((acc, curr) => [...acc, curr, values.shift()], [])
-    .filter(Boolean);
+    .filter(Boolean)
 
-  let state = {};
+  let state = {}
 
   const stream = new Stream({
     async start(controller) {
-      let buffer = "";
+      let buffer = ""
       for (const token of tokens) {
-        if (typeof token === "string") {
-          controller.enqueue(token);
-          buffer += token;
-        } else if (typeof token === "function") {
-          const result = token({ buffer, state });
-          console.log(result)
+        if (typeof token === "function") {
+          const result = await token({ buffer, state })
           if (result instanceof Stream) {
             for await (const chunk of result) {
-              controller.enqueue(chunk);
+              controller.enqueue(chunk)
+              buffer += chunk
             }
           } else {
-            controller.enqueue(result);
+            controller.enqueue(result)
+            buffer += result
           }
-          buffer += token;
+        } else {
+          buffer += token
         }
       }
-      controller.close();
+      controller.close()
     },
-  });
+  })
 
-  return [stream, state];
+  return { stream, state }
 }
