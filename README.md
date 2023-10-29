@@ -1,15 +1,9 @@
-# any-llm
+# Future Ideas
 
-To install dependencies:
-
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.0.7. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+- TTS via tranformers.js
+- Some kind of Agents
+- Embeddings
+- Tools
+- Connection adapters
+- Prompt management
+- Model manager
