@@ -13,14 +13,79 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@radix-ui/react-accordion"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
+import { ImAttachment } from "react-icons/im"
+import { useState } from "react"
+import { Input } from "@/components/ui/input"
+import { processFiles } from "@/lib/extraction"
 
-export const ChatSettings = observer(({ chat }) => {
+const FileDropper: React.FC = () => {
+  const [dragActive, setDragActive] = useState(false)
+
+  const handleDrag = function (e) {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true)
+    } else if (e.type === "dragleave") {
+      setDragActive(false)
+    }
+  }
+  const handleDrop = function (e) {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      // at least one file has been dropped so do something
+      // handleFiles(e.dataTransfer.files);
+    }
+  }
+  return (
+    <form
+      id="form-file-upload"
+      onDragEnter={handleDrag}
+      onSubmit={(e) => e.preventDefault()}
+    >
+      <input type="file" id="input-file-upload" multiple={true} />
+      <label
+        id="label-file-upload"
+        htmlFor="input-file-upload"
+        className={dragActive ? "drag-active" : ""}
+      >
+        <div className="flex w-32 h-32 items-center justify-center border border-dashed rounded-md italic text-muted-foreground text-xs text-center">
+          <div>
+            Drop your file here or
+            <button className="upload-button">Browse</button>
+          </div>
+        </div>
+      </label>
+      {dragActive && (
+        <div
+          id="drag-file-element"
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+        ></div>
+      )}
+    </form>
+  )
+}
+
+export const ChatSettings = observer(() => {
   const store = useStore()
+  const { activeChat: chat } = useStore()
+
+  const handleAttachment = async (e) => {
+    const docs = await processFiles(e.target.files)
+    chat.setAttachments(docs)
+  }
 
   return (
     <ScrollArea>
       <div className="px-4 py-8">
-        <ChatSettingsModelSelector chat={chat} />
+        <ChatSettingsModelSelector />
         <Accordion className="py-4" type="single" defaultValue="inference">
           <AccordionItem className="" value="inference">
             <AccordionTrigger className="flex flex-1 items-center justify-between py-4 font-medium transition-all hover:underline">
@@ -78,6 +143,16 @@ export const ChatSettings = observer(({ chat }) => {
             </AccordionContent>
           </AccordionItem>
 
+          <AccordionItem className="" value="embeddings">
+            <AccordionTrigger className="flex flex-1 items-center justify-between py-4 font-medium transition-all hover:underline">
+              <ImAttachment className="mr-2" />
+              Attachments
+            </AccordionTrigger>
+            <AccordionContent className="flex flex-col space-y-4">
+              <Input type="file" onChange={handleAttachment} />
+            </AccordionContent>
+          </AccordionItem>
+
           <AccordionItem className="" value="prompts">
             <AccordionTrigger className="flex flex-1 items-center justify-between py-4 font-medium transition-all hover:underline">
               {/* <ChevronDownIcon aria-hidden /> */}
@@ -87,6 +162,13 @@ export const ChatSettings = observer(({ chat }) => {
             <AccordionContent className="flex flex-col space-y-4">
               <div className="flex flex-col space-y-2">
                 {/* <PresetSelector onSelect={chat.setSystemMessage} /> */}
+                <Label className="flex items-center space-x-2">
+                  <Checkbox
+                    checked={chat.useSystemMessage}
+                    onCheckedChange={chat.setUseSystemMessage}
+                  />
+                  <span>System Message</span>
+                </Label>
                 <Textarea
                   className="flex-auto h-36"
                   placeholder="System Message"
@@ -97,11 +179,35 @@ export const ChatSettings = observer(({ chat }) => {
 
               <div className="flex flex-col space-y-2">
                 {/* <PresetSelector onSelect={chat.setSystemMessage} /> */}
+                <Label className="flex items-center space-x-2">
+                  <Checkbox
+                    checked={chat.useUserMessage}
+                    onCheckedChange={chat.setUseUserMessage}
+                  />
+                  <span>User Message</span>
+                </Label>
                 <Textarea
                   className="flex-auto h-36"
                   placeholder="User Message"
                   value={chat.user_message}
                   onChange={(e) => chat.setUserMessage(e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col space-y-2">
+                {/* <PresetSelector onSelect={chat.setSystemMessage} /> */}
+                <Label className="flex items-center space-x-2">
+                  <Checkbox
+                    checked={chat.useAssistantMessage}
+                    onCheckedChange={chat.setUseAssistantMessage}
+                  />
+                  <span>Assistant Message</span>
+                </Label>
+                <Textarea
+                  className="flex-auto h-36"
+                  placeholder="User Message"
+                  value={chat.assistant_message}
+                  onChange={(e) => chat.setAssistantMessage(e.target.value)}
                 />
               </div>
 

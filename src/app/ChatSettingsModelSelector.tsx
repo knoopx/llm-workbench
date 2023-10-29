@@ -12,45 +12,38 @@ import {
 } from "../components/ui/select"
 import { humanFileSize } from "@/lib/utils"
 
-export const ChatSettingsModelSelect = observer(
-  ({ chat }: { chat: unknown }) => {
-    const { models } = useStore()
+export const ChatSettingsModelSelect = observer(() => {
+  const { models } = useStore()
+  const { activeChat: chat } = useStore()
 
-    return (
-      <Select
-        id="model"
-        onValueChange={chat.setModel}
-        defaultValue={chat.model}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Model" />
-        </SelectTrigger>
+  return (
+    <Select id="model" onValueChange={chat.setModel} value={chat.model}>
+      <SelectTrigger>
+        <SelectValue placeholder="Model" />
+      </SelectTrigger>
 
-        <SelectContent>
-          {models.map((model) => (
-            <SelectItem key={model.digest} value={model.name}>
-              {model.name}{" "}
-              <span className="text-muted-foreground text-xs italic">
-                ({humanFileSize(model.size)})
-              </span>
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    )
-  },
-)
+      <SelectContent>
+        {models.map((model) => (
+          <SelectItem key={model.digest} value={model.name}>
+            {model.name}{" "}
+            <span className="text-muted-foreground text-xs italic">
+              ({humanFileSize(model.size)})
+            </span>
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  )
+})
 
-export const ChatSettingsModelSelector = observer(
-  ({ chat }: { chat: unknown }) => {
-    const store = useStore()
-    return (
-      <div className="flex space-x-2">
-        <ChatSettingsModelSelect chat={chat} />
-        <Button onClick={store.refreshModels}>
-          <IoMdRefresh size="1.25em" />
-        </Button>
-      </div>
-    )
-  },
-)
+export const ChatSettingsModelSelector = observer(() => {
+  const store = useStore()
+  return (
+    <div className="flex space-x-2">
+      <ChatSettingsModelSelect />
+      <Button onClick={store.refreshModels}>
+        <IoMdRefresh size="1.25em" />
+      </Button>
+    </div>
+  )
+})

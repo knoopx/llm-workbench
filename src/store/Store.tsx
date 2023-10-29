@@ -12,7 +12,7 @@ export const Store = t
     activeChat: t.maybeNull(t.reference(Chat)),
     chats: t.array(Chat),
     models: t.array(Model),
-    presets: t.optional(Presets, {})
+    presets: t.optional(Presets, {}),
   })
   .views((self) => ({
     get client() {
@@ -29,7 +29,7 @@ export const Store = t
     },
     addChat(chat: Instance<typeof Chat>) {
       self.chats.push(chat)
-      self.activeChat = self.chats[0]
+      self.activeChat = self.chats[self.chats.length - 1]
     },
     newChat() {
       if (self.models.length === 0) return

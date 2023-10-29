@@ -9,7 +9,7 @@ const App = observer(() => {
   return (
     <main className="grid grid-cols-[20em,auto] auto-rows-fr h-screen">
       <Sidebar chats={chats} />
-      {connected && activeChat && <ChatWithSettings chat={activeChat} />}
+      {connected && activeChat && <ChatWithSettings />}
     </main>
   )
 })

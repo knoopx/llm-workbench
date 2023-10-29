@@ -13,7 +13,7 @@ export const ChatSettingsSlider = observer(
       </div>
       <Slider
         id={id}
-        defaultValue={[value]}
+        value={[value]}
         onValueChange={(v) => onChange(v[0])}
         className="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4"
         aria-label={label}

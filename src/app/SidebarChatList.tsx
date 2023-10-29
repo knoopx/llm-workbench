@@ -34,9 +34,11 @@ export const ChatList = observer(
             >
               <span className="flex justify-left items-center space-x-3 mr-3 overflow-hidden">
                 <BsChatRightTextFill className="flex-none" size="1em" />
-                <span className="whitespace-nowrap text-ellipsis truncate">
+                <span className="font-medium truncate">{chat.model}</span>
+
+                <span className="whitespace-nowrap text-ellipsis truncate italic text-muted-foreground">
                   {chat.title}
-                </span>
+                s</span>
               </span>
               <a
                 className="ml-auto"

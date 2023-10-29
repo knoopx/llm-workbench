@@ -1,10 +1,8 @@
 import { Button } from "@/components/ui/button"
 import { BsFillLightbulbFill, BsLightbulb } from "react-icons/bs"
 import { useTheme } from "@/components/ThemeProvider"
-import { useStore } from "@/store"
 
 export const ToggleDarkButton = () => {
-  const store = useStore()
   const theme = useTheme()
 
   const toggleTheme = () => {
@@ -13,7 +11,11 @@ export const ToggleDarkButton = () => {
 
   return (
     <Button variant="ghost" size="icon" onClick={toggleTheme}>
-      {store.theme == "dark" ? <BsFillLightbulbFill /> : <BsLightbulb />}
+      {theme.theme == "dark" ? (
+        <BsFillLightbulbFill size="1.5em" />
+      ) : (
+        <BsLightbulb size="1.5em" />
+      )}
     </Button>
   )
 }

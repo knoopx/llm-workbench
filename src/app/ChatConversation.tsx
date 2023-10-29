@@ -2,12 +2,16 @@ import { Input } from "@/components/ui/input"
 import { observer } from "mobx-react"
 import { Button } from "../components/ui/button"
 import { IoMdTrash, IoMdRefresh } from "react-icons/io"
-import { Instance } from "mobx-state-tree"
 import { ScrollArea } from "../components/ui/scroll-area"
 import { Message } from "./ChatConversationMessage"
 import { ToggleDarkButton } from "./ToggleDarkButton"
+import { useStore } from "@/store"
+import { ImMagicWand } from "react-icons/im"
+import { VscDebugContinueSmall } from "react-icons/vsc"
+import { BiArrowToTop } from "react-icons/bi"
 
-export const ChatConversation = observer(({ chat }: { chat: Instance<any> }) => {
+export const ChatConversation = observer(() => {
+  const { activeChat: chat } = useStore()
   const messages = [
     // {
     //   role: "system",
@@ -33,12 +37,21 @@ export const ChatConversation = observer(({ chat }: { chat: Instance<any> }) => 
         <form className="flex-auto flex" onSubmit={chat.onSubmit}>
           <Input autoFocus placeholder="Enter text..." />
         </form>
-        <Button onClick={chat.regenerate}>
-          <IoMdRefresh size="1.5em" />
-        </Button>
-        <Button onClick={chat.onClearConversation}>
-          <IoMdTrash size="1.5em" />
-        </Button>
+
+        <div className="space-x-1">
+          <Button onClick={chat.regenerate}>
+            <IoMdRefresh size="1.5em" />
+          </Button>
+          <Button onClick={chat.respond}>
+            <VscDebugContinueSmall size="1.5em" />
+          </Button>
+          <Button onClick={chat.pop}>
+            <BiArrowToTop size="1.5em" />
+          </Button>
+          <Button onClick={chat.onClearConversation}>
+            <IoMdTrash size="1.5em" />
+          </Button>
+        </div>
       </div>
     </div>
   )
