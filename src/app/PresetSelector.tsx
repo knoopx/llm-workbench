@@ -21,6 +21,8 @@ import { useEffect, useState } from "react"
 // }, [])
 
 export const PresetSelector = ({ presets, onSelect }) => {
+  const sorted = presets.slice().sort((a, b) => a.key.localeCompare(b.name))
+
   return (
     <Select onValueChange={onSelect}>
       <SelectTrigger>
@@ -28,7 +30,7 @@ export const PresetSelector = ({ presets, onSelect }) => {
       </SelectTrigger>
 
       <SelectContent className="max-h-64">
-        {presets.map(({ key, value }) => (
+        {sorted.map(({ key, value }) => (
           <SelectItem key={key} value={value}>
             {key}
           </SelectItem>
