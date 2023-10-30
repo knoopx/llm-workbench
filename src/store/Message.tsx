@@ -7,6 +7,11 @@ export const Message = t
     date: t.optional(t.Date, () => new Date()),
     open: t.optional(t.boolean, false),
   })
+  .views((self) => ({
+    get isEmpty() {
+      return !self.content
+    },
+  }))
   .actions((self) => ({
     update(props: Partial<typeof self>) {
       Object.assign(self, props)

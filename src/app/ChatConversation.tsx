@@ -37,7 +37,7 @@ export const ChatConversation = observer(() => {
       <ScrollArea className="flex-auto">
         <div className="flex flex-auto flex-col items-center">
           {chat.messages.map((message, i) => (
-            <Message key={i} {...message} />
+            <Message key={i} message={message} />
           ))}
         </div>
       </ScrollArea>

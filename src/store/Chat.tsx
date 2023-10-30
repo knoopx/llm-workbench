@@ -34,7 +34,7 @@ export const Chat = t
   })
   .views((self) => ({
     get nonEmptyMessages() {
-      return self.messages.filter((message) => message.content.length)
+      return self.messages.filter((m) => !m.isEmpty)
     },
     get userMessages() {
       return this.nonEmptyMessages.filter((message) => message.role === "user")
@@ -90,7 +90,7 @@ export const Chat = t
 
       let result = this.renderTemplate(self.chat_template, {
         messages: messages
-          .filter((message) => message.open || message.content.length)
+          .filter((message) => message.open || !message.isEmpty)
           .map((message) => ({
             closed: !message.open,
             ...message,
@@ -176,6 +176,7 @@ export const Chat = t
         message = Message.create({
           role: "assistant",
           content: "",
+          open: true,
         })
         this.addMessage(message)
       }

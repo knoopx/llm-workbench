@@ -13,11 +13,12 @@ import remarkGfm from "remark-gfm"
 import rehypeHighlight from "rehype-highlight"
 import "katex/dist/katex.min.css"
 import "highlight.js/styles/github-dark.css"
-import { useTheme } from "@/components/ThemeProvider"
 
-export const Message = observer(({ role, content, open }) => {
+export const Message = observer(({ message }) => {
   const ref = useRef(null)
-  const { theme } = useTheme()
+
+  const { role, content, isEmpty, open } = message
+
   useEffect(() => {
     const scrollContainer = ref.current?.closest(
       "[data-radix-scroll-area-viewport]",
@@ -54,30 +55,40 @@ export const Message = observer(({ role, content, open }) => {
                 <div className="text-muted text-xs">{date.toLocaleTimeString()}</div> */}
       </div>
       <div className="flex-auto">
-        <Markdown
-          remarkPlugins={[remarkGfm, remarkMath]}
-          rehypePlugins={[rehypeHighlight, rehypeKatex]}
-          className={cn("prose dark:prose-invert min-w-[65ch]", {
-            "text-muted-foreground": role === "user",
-            "italic text-muted-foreground": role === "system",
-          })}
-          components={{
-            pre({ node, children, ...rest }) {
-              return (
-                <pre {...rest} className="not-prose text-xs">
-                  {cloneElement(children, {
-                    className: cn(
-                      "rounded-md p-4 !bg-gray-900",
-                      children.props.className,
-                    ),
-                  })}
-                </pre>
-              )
-            },
-          }}
-        >
-          {content}
-        </Markdown>
+        {isEmpty ? (
+          <div
+            className={cn("min-w-[65ch]", {
+              "animate-pulse": message.open,
+            })}
+          >
+            ...
+          </div>
+        ) : (
+          <Markdown
+            remarkPlugins={[remarkGfm, remarkMath]}
+            rehypePlugins={[rehypeHighlight, rehypeKatex]}
+            className={cn("prose dark:prose-invert min-w-[65ch]", {
+              "text-muted-foreground": role === "user",
+              "italic text-muted-foreground": role === "system",
+            })}
+            components={{
+              pre({ node, children, ...rest }) {
+                return (
+                  <pre {...rest} className="not-prose text-xs">
+                    {cloneElement(children, {
+                      className: cn(
+                        "rounded-md p-4 !bg-gray-900",
+                        children.props.className,
+                      ),
+                    })}
+                  </pre>
+                )
+              },
+            }}
+          >
+            {content}
+          </Markdown>
+        )}
       </div>
     </div>
   )
