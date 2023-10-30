@@ -7,6 +7,7 @@ import { IoIosFlash } from "react-icons/io"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { MdEdit } from "react-icons/md"
+import { FaNetworkWired } from "react-icons/fa"
 
 const ConnectButton = observer(() => {
   const store = useStore()
@@ -56,8 +57,9 @@ export const Sidebar = observer(
         <ChatList chats={chats} />
         <div className="flex justify-between items-center space-x-2 px-3 py-2">
           {store?.connected ? (
-            <Label>
-              <span className="text-muted-foreground">{store.endpoint}</span>
+            <Label className="text-muted-foreground flex space-x-2">
+              <FaNetworkWired />
+              <span>{store.endpoint}</span>
             </Label>
           ) : (
             <Input
