@@ -1,16 +1,15 @@
 import Markdown from "react-markdown"
-// import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { cn } from "@/lib/utils"
 import { TbPrompt } from "react-icons/tb"
-// import { shadesOfPurple } from "react-syntax-highlighter/dist/esm/styles/hljs";
-// import { shadesOfPurple } from "react-syntax-highlighter/dist/esm/styles/prism"
 import { cloneElement, useEffect, useRef } from "react"
 import { observer } from "mobx-react"
 
-import rehypeKatex from "rehype-katex"
 import remarkMath from "remark-math"
 import remarkGfm from "remark-gfm"
+import remarkEmoji from "remark-emoji"
 import rehypeHighlight from "rehype-highlight"
+import rehypeKatex from "rehype-katex"
+
 import "katex/dist/katex.min.css"
 import "highlight.js/styles/github-dark.css"
 
@@ -50,9 +49,6 @@ export const Message = observer(({ message }) => {
               role[0].toUpperCase()
             ))}
         </span>
-
-        {/* <div className="font-medium w-32">{role}</div>
-                <div className="text-muted text-xs">{date.toLocaleTimeString()}</div> */}
       </div>
       <div className="flex-auto">
         {isEmpty ? (
@@ -65,7 +61,7 @@ export const Message = observer(({ message }) => {
           </div>
         ) : (
           <Markdown
-            remarkPlugins={[remarkGfm, remarkMath]}
+            remarkPlugins={[remarkEmoji, remarkGfm, remarkMath]}
             rehypePlugins={[rehypeHighlight, rehypeKatex]}
             className={cn("prose dark:prose-invert min-w-[65ch]", {
               "text-muted-foreground": role === "user",
