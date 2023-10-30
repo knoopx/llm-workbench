@@ -15,7 +15,7 @@ import "katex/dist/katex.min.css"
 import "highlight.js/styles/github-dark.css"
 import { useTheme } from "@/components/ThemeProvider"
 
-export const Message = observer(({ role, content }) => {
+export const Message = observer(({ role, content, open }) => {
   const ref = useRef(null)
   const { theme } = useTheme()
   useEffect(() => {
@@ -38,6 +38,7 @@ export const Message = observer(({ role, content }) => {
               "dark:bg-white dark:text-black bg-black text-white font-extrabold ":
                 role === "assistant",
               "text-muted-foreground": role === "user",
+              "animate-pulse": role === "assistant" && open,
             },
           )}
         >
