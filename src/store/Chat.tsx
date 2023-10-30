@@ -1,53 +1,40 @@
 import Mustache from "mustache"
-import { getParent, types as t } from "mobx-state-tree"
+import { destroy, getParent, types as t } from "mobx-state-tree"
 import { IMessage } from "@/lib/prompt"
 import { randomId } from "@/lib/utils"
 import { Message } from "./Message"
 import { CHAT_TEMPLATES } from "./Presets"
 Mustache.escape = (text) => text
 
+const DEFAULT_SYSTEM_MESSAGE = `A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions. Current time is {{time}}.`
+const DEFAULT_USER_MESSAGE = `Keep in mind for future reference, my name is Victor Martinez, I was born in 1985 and I live in Barcelona. I'm a professional software developer. I love non-commercial music, DIY culture, and FOSS.`
+const DEFAULT_ASSISTANT_MESSAGE = `In order to provide short and concise responses without any unnecessary apologies or social formalities, I will get straight to the point in my communication. This approach allows us to be efficient with our time and focus on conveying important information clearly and accurately. By cutting out superfluous language, we can avoid wasting words and ensure that our messages are direct and impactful. Additionally, this style of communication promotes a more casual and relaxed interaction between individuals, allowing for a more natural flow of conversation without any artificial barriers or obstacles. Overall, short and concise answers with no apologies or social formalities enable us to communicate`
+
 const InferenceOptions = t.model("Options", {
   temperature: t.optional(t.number, 0.7),
   top_k: t.optional(t.number, 40),
   top_p: t.optional(t.number, 0.9),
   repeat_penalty: 1.18,
-  num_predict: t.optional(t.number, 128),
+  num_predict: t.optional(t.number, 256),
 })
 
 export const Chat = t
   .model("Chat", {
     id: t.optional(t.identifier, randomId),
+    prompt: t.optional(t.string, ""),
     model: t.string,
     chat_template: t.optional(t.string, Object.values(CHAT_TEMPLATES)[0]),
     attachments: t.array(t.string),
-    system_message: t.optional(
-      t.string,
-      `You are a helpful assistant. Current time is {{time}}.`,
-    ),
-    user_message: t.optional(
-      t.string,
-      "My name is Victor Martinez, I was born in 1985 and I live in Barcelona. I'm a professional software developer. I love non-commercial music, DIY culture, and FOSS. I would like you to respond with short and concise answers. Skip apologies and any form of social formalism.",
-    ),
-    assistant_message: t.optional(
-      t.string,
-      "In order to provide short and concise responses without any unnecessary apologies or social formalities, I will get straight to the point in my communication. This approach allows us to be efficient with our time and focus on conveying important information clearly and accurately. By cutting out superfluous language, we can avoid wasting words and ensure that our messages are direct and impactful. Additionally, this style of communication promotes a more casual and relaxed interaction between individuals, allowing for a more natural flow of conversation without any artificial barriers or obstacles. Overall, short and concise answers with no apologies or social formalities enable us to communicate",
-    ),
+    system_message: t.optional(t.string, DEFAULT_SYSTEM_MESSAGE),
+    user_message: t.optional(t.string, DEFAULT_USER_MESSAGE),
+    assistant_message: t.optional(t.string, DEFAULT_ASSISTANT_MESSAGE),
     options: t.optional(InferenceOptions, {}),
     messages: t.array(Message),
     history: t.array(Message),
-    useSystemMessage: t.optional(t.boolean, true),
-    useUserMessage: t.optional(t.boolean, true),
-    useAssistantMessage: t.optional(t.boolean, true),
   })
   .views((self) => ({
     get nonEmptyMessages() {
       return self.messages.filter((message) => message.content.length)
-    },
-    get systemMessage() {
-      return Mustache.render(self.system_message, {
-        time: () => new Date().toISOString(),
-        retrieval: self.attachments.join("\n"),
-      })
     },
     get userMessages() {
       return this.nonEmptyMessages.filter((message) => message.role === "user")
@@ -68,22 +55,27 @@ export const Chat = t
     },
     get title() {
       if (this.userMessages.length === 0) return `New Chat with ${self.model}`
-      return this.lastMessage.content.slice(0, 20)
+      return this.lastMessage?.content.slice(0, 20)
+    },
+    renderTemplate(template: string, extra = {}) {
+      try {
+        return Mustache.render(template, {
+          upperCase: () => (text, render) => render(text).toUpperCase(),
+          attachments: self.attachments.join("\n"),
+          system: self.system_message,
+          user: self.user_message,
+          assistant: self.assistant_message,
+          prompt: this.lastUserMessage?.content,
+          time: new Date().toLocaleString(),
+          ...extra,
+        })
+      } catch (e) {
+        return e.message
+      }
     },
     get template() {
       const messages = [
-        {
-          role: "system",
-          content: this.systemMessage,
-        },
-        self.useUserMessage && {
-          role: "user",
-          content: self.user_message,
-        },
-        self.useAssistantMessage && {
-          role: "assistant",
-          content: self.assistant_message,
-        },
+        ...self.history,
         ...self.messages,
         {
           role: "assistant",
@@ -92,12 +84,7 @@ export const Chat = t
         },
       ].filter(Boolean)
 
-      return Mustache.render(self.chat_template, {
-        upperCase: () => (text, render) => render(text).toUpperCase(),
-        retrieval: self.attachments.join("\n"),
-        system: this.systemMessage,
-        user: self.user_message,
-        prompt: this.lastMessage.content,
+      let result = this.renderTemplate(self.chat_template, {
         messages: messages
           .filter((message) => message.open || message.content.length)
           .map((message) => ({
@@ -105,20 +92,24 @@ export const Chat = t
             ...message,
           })),
       })
+
+      let last = null
+      while (last !== result) {
+        last = result
+        result = this.renderTemplate(result)
+      }
+      return result
     },
   }))
   .actions((self) => ({
+    setPrompt(prompt: string) {
+      self.prompt = prompt
+    },
+    addHistoryMessage(message: IMessage) {
+      self.history.push(message)
+    },
     setAttachments(attachments: string[]) {
       self.attachments.replace(attachments)
-    },
-    setUseAssistantMessage(value: boolean) {
-      self.useAssistantMessage = value
-    },
-    setUseSystemMessage(value: boolean) {
-      self.useSystemMessage = value
-    },
-    setUseUserMessage(value: boolean) {
-      self.useUserMessage = value
     },
     setChatTemplate(template: string) {
       self.chat_template = template
@@ -136,12 +127,13 @@ export const Chat = t
       self.messages.clear()
     },
     pop() {
+      const message = self.lastMessage
+      if (message.role === "user") {
+        self.prompt = message.content
+      }
       self.messages.pop()
     },
-    onSubmit(e: React.FormEvent<HTMLFormElement>) {
-      e.preventDefault()
-      const input = e.currentTarget.elements[0] as HTMLInputElement
-      const content = input.value
+    userMessage(content) {
       if (!content) return
 
       const message = {
@@ -151,7 +143,6 @@ export const Chat = t
       }
 
       self.messages.push(message)
-      input.value = ""
 
       this.respond()
     },
@@ -169,7 +160,7 @@ export const Chat = t
       this.addMessage(message)
 
       for await (const chunk of stream) {
-        message.update(message.content + chunk)
+        message.update({ content: message.content + chunk })
       }
     },
     regenerate() {
@@ -184,5 +175,8 @@ export const Chat = t
     },
     updateOptions(options: Partial<typeof self.options>) {
       Object.assign(self.options, options)
+    },
+    remove(thing: any) {
+      destroy(thing)
     },
   }))

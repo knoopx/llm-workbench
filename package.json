@@ -1,7 +1,19 @@
 {
-  "name": "any-llm",
-  "module": "index.ts",
+  "name": "llm-workbench",
   "type": "module",
+  "homepage": "https://knoopx.github.io/llm-workbench/",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "devDependencies": {
     "@types/node": "^20.8.9",
     "@types/react": "^18.2.33",

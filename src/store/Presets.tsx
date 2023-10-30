@@ -44,18 +44,25 @@ export const INFERENCE_PRESETS = {
   },
 }
 
+export const SYSTEM_TEMPLATES = [
+  "A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.",
+  "Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.",
+]
+
 export const CHAT_TEMPLATES = {
   ChatML: `{{#messages}}
 <|im_start|>{{role}}
 {{content}}{{#closed}}<|im_end|>{{/closed}}
 {{/messages}}`,
 
-  Vicuna: `A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions.
+  "Mistral Instruct": `<s>[INST] {{attachments}} {{prompt}} [/INST]`,
+
+  Vicuna: `{{system}}
 {{#messages}}
 {{#upperCase}}{{role}}{{/upperCase}}: {{content}}
 {{/messages}}`,
 
-  "Alpaca Instruct": `Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+  "Alpaca Instruct": `{{system}}
 
 ### Instruction:
 {{prompt}}

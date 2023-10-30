@@ -1,5 +1,4 @@
-import { types as t } from "mobx-state-tree";
-
+import { getParent, types as t } from "mobx-state-tree"
 
 export const Message = t
   .model("Message", {
@@ -8,7 +7,10 @@ export const Message = t
     date: t.optional(t.Date, () => new Date()),
   })
   .actions((self) => ({
-    update(content: string) {
-      self.content = content;
+    update(props: Partial<typeof self>) {
+      Object.assign(self, props)
     },
-  }));
+    remove() {
+      getParent(self, 2).remove(self)
+    },
+  }))
