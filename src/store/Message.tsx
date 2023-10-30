@@ -5,6 +5,7 @@ export const Message = t
     role: t.optional(t.string, "user"),
     content: t.string,
     date: t.optional(t.Date, () => new Date()),
+    open: t.optional(t.boolean, false),
   })
   .actions((self) => ({
     update(props: Partial<typeof self>) {

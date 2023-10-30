@@ -1,10 +1,9 @@
 import Mustache from "mustache"
 import { destroy, getParent, types as t } from "mobx-state-tree"
-import { IMessage } from "@/lib/prompt"
 import { randomId } from "@/lib/utils"
 import { Message } from "./Message"
 import { CHAT_TEMPLATES } from "./Presets"
-
+import { Instance } from "mobx-state-tree"
 Mustache.escape = (text) => text
 
 const DEFAULT_SYSTEM_MESSAGE = `A chat between a curious user and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the user's questions. Current time is {{time}}.`
@@ -80,14 +79,13 @@ export const Chat = t
       }
     },
     get template() {
+      return this.buildTemplate()
+    },
+    buildTemplate(newMessages: Instance<typeof Message>[] = []) {
       const messages = [
         ...self.history,
         ...self.messages,
-        {
-          role: "assistant",
-          content: "",
-          open: true,
-        },
+        ...newMessages,
       ].filter(Boolean)
 
       let result = this.renderTemplate(self.chat_template, {
@@ -111,7 +109,7 @@ export const Chat = t
     setPrompt(prompt: string) {
       self.prompt = prompt
     },
-    addHistoryMessage(message: IMessage) {
+    addHistoryMessage(message: Instance<typeof Message>) {
       self.history.push(message)
     },
     setAttachments(attachments: string[]) {
@@ -126,7 +124,7 @@ export const Chat = t
     setAssistantMessage(message: string) {
       self.assistant_message = message
     },
-    addMessage(message: IMessage) {
+    addMessage(message: Instance<typeof Message>) {
       self.messages.push(message)
     },
     onClearConversation() {
@@ -152,20 +150,41 @@ export const Chat = t
 
       this.respond()
     },
-    async respond() {
+    async respond(newMessage = true) {
       const { client } = getParent(self, 2)
-      const stream = client.completion(self.template, self.model, self.options)
 
-      const message = Message.create({
-        role: "assistant",
-        content: "",
-      })
+      const newMessages = []
+      if (newMessage) {
+        newMessages.push(
+          Message.create({
+            role: "assistant",
+            content: "",
+            open: true,
+          }),
+        )
+      } else {
+        self.lastMessage.update({ open: true })
+      }
 
-      this.addMessage(message)
+      const template = self.buildTemplate(newMessages)
+      console.log(template)
+
+      const stream = client.completion(template, self.model, self.options)
+
+      let message = self.lastMessage
+      if (newMessage) {
+        message = Message.create({
+          role: "assistant",
+          content: "",
+        })
+        this.addMessage(message)
+      }
 
       for await (const chunk of stream) {
         message.update({ content: message.content + chunk })
       }
+
+      message.update({ open: false })
     },
     regenerate() {
       self.messages.pop()

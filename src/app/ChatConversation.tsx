@@ -55,7 +55,7 @@ export const ChatConversation = observer(() => {
           <Button onClick={chat.regenerate}>
             <IoMdRefresh size="1.5em" />
           </Button>
-          <Button onClick={chat.respond}>
+          <Button onClick={() => chat.respond(false)}>
             <VscDebugStart size="1.5em" />
           </Button>
           <Button onClick={chat.respond}>
