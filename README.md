@@ -39,6 +39,7 @@ systemctl restart ollama
 
 # Future Ideas
 
+- Full page prompt editor
 - Collapsible side panels
 - Cancel generation
 - Import/Export chats
@@ -54,15 +55,15 @@ systemctl restart ollama
   - https://do-me.github.io/SemanticFinder/
   - https://github.com/yusufhilmi/client-vector-search
   - https://github.com/mwilliamson/mammoth.js
-- NER
-  - https://winkjs.org/wink-nlp/wink-nlp-in-browsers.html
 - Other pipelines
   - TTS
   - Re-formating
     - https://huggingface.co/ldenoue/distilbert-base-re-punctuate
   - Summarization
     - https://huggingface.co/ldenoue/distilbart-cnn-6-6
-    - https://huggingface.co/Xenova/bert-base-NER
   - Translation
   - Speech Recognition
     - https://huggingface.co/docs/transformers.js/api/pipelines#pipelinesautomaticspeechrecognitionpipeline
+  - NER
+    - https://huggingface.co/Xenova/bert-base-NER
+    - https://winkjs.org/wink-nlp/wink-nlp-in-browsers.html
