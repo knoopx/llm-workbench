@@ -282,7 +282,7 @@ const InferenceParamsAccordionItem = observer(() => {
           label="Max. Tokens"
           value={chat.options.num_predict}
           max={1024 * 8}
-          step={256}
+          step={64}
           onChange={(value) => chat.updateOptions({ num_predict: value })}
         />
       </div>
