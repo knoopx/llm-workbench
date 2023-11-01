@@ -39,6 +39,8 @@ systemctl restart ollama
 
 # Future Ideas
 
+- window.ai integration
+- Copy to clipboard overlay over messages
 - Full page prompt editor
 - Collapsible side panels
 - Cancel generation
