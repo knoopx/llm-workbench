@@ -14,8 +14,11 @@ const InferenceOptions = t.model("Options", {
   temperature: t.optional(t.number, 0.7),
   top_k: t.optional(t.number, 40),
   top_p: t.optional(t.number, 0.9),
-  repeat_penalty: 1.18,
-  num_predict: t.optional(t.number, 256),
+  repeat_last_n: t.optional(t.number, -1),
+  repeat_penalty: t.optional(t.number, 1.18),
+  num_predict: t.optional(t.number, -2),
+  num_ctx: t.optional(t.number, 2048),
+  stop: t.optional(t.array(t.string), []),
 })
 
 export const Chat = t

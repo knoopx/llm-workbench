@@ -269,6 +269,14 @@ const InferenceParamsAccordionItem = observer(() => {
           step={0.1}
           onChange={(value) => chat.updateOptions({ top_p: value })}
         />
+         <ChatSettingsSlider
+          id="repeat_last_n"
+          label="Repeat Window"
+          value={chat.options.repeat_last_n}
+          max={1024 * 8}
+          step={64}
+          onChange={(value) => chat.updateOptions({ repeat_last_n: value })}
+        />
         <ChatSettingsSlider
           id="repeat_penalty"
           label="Reptition Penalty"
@@ -284,6 +292,14 @@ const InferenceParamsAccordionItem = observer(() => {
           max={1024 * 8}
           step={64}
           onChange={(value) => chat.updateOptions({ num_predict: value })}
+        />
+        <ChatSettingsSlider
+          id="num_ctx"
+          label="Context Window"
+          value={chat.options.num_ctx}
+          max={1024 * 8}
+          step={64}
+          onChange={(value) => chat.updateOptions({ num_ctx: value })}
         />
       </div>
     </ChatSettingsAccordionItem>
