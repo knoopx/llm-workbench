@@ -61,7 +61,7 @@ export const Chat = t
         }
         return `New Chat`
       }
-      return this.lastMessage?.content.slice(0, 20)
+      return this.lastMessage?.content.slice(0, 80)
     },
     get modifiedAt() {
       return this.lastMessage?.date ?? self.createdAt
