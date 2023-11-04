@@ -6,6 +6,12 @@ import { cn } from "@/lib/utils"
 
 const GENERATION_PARAMS = [
   {
+    id: "num_predict",
+    label: "Max. Tokens",
+    max: 1024 * 8,
+    step: 64,
+  },
+  {
     id: "temperature",
     label: "Temperature",
     max: 1,
@@ -24,6 +30,12 @@ const GENERATION_PARAMS = [
     step: 0.1,
   },
   {
+    id: "num_ctx",
+    label: "Context Window",
+    max: 1024 * 8,
+    step: 64,
+  },
+  {
     id: "repeat_last_n",
     label: "Repeat Window",
     max: 1024 * 8,
@@ -34,18 +46,6 @@ const GENERATION_PARAMS = [
     label: "Reptition Penalty",
     max: 2,
     step: 0.1,
-  },
-  {
-    id: "num_predict",
-    label: "Max. Tokens",
-    max: 1024 * 8,
-    step: 64,
-  },
-  {
-    id: "num_ctx",
-    label: "Context Window",
-    max: 1024 * 8,
-    step: 64,
   },
 ]
 export const AgentGenerationParams: React.FC<{
