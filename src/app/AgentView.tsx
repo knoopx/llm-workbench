@@ -6,7 +6,7 @@ import { AgentGenerationParams } from "../components/AgentGenerationParams"
 import { AgentHistory } from "../components/AgentConversation"
 import { AgentPromptTemplate } from "./AgentPromptTemplate"
 import { Button } from "@/components/ui/button"
-import { IoMdAdd, IoMdTrash } from "react-icons/io"
+import { IoMdAdd, IoMdCopy, IoMdTrash } from "react-icons/io"
 import { AutoTextarea } from "@/components/AutoTextarea"
 import {
   DropdownMenu,
@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Picker } from "@/components/Picker"
-import { Instance } from "mobx-state-tree"
+import { Instance, getSnapshot } from "mobx-state-tree"
 import { Agent } from "@/store/Agent"
 import { AdapterList } from "@/lib/adapters"
 import { cn } from "@/lib/utils"
@@ -157,6 +157,7 @@ export const AgentAdapterPicker: React.FC<{
 
 export const AgentView = observer(() => {
   const {
+    addAgent,
     state: { resource: agent },
   } = useStore()
 
@@ -165,12 +166,24 @@ export const AgentView = observer(() => {
       <div className="grid grid-cols-2 gap-16">
         <div className="space-y-2 mb-4">
           <span className="font-medium">Agent Name</span>
-          <Input
-            autoFocus
-            className="w-full text-xl"
-            value={agent.name}
-            onChange={(e) => agent.update({ name: e.target.value })}
-          />
+          <div className="flex items-center space-x-2">
+            <Input
+              autoFocus
+              className="w-full text-xl"
+              value={agent.name}
+              onChange={(e) => agent.update({ name: e.target.value })}
+            />
+            <Button
+              onClick={() => {
+                const { id, name, ...props } = getSnapshot(agent) as Instance<
+                  typeof Agent
+                >
+                addAgent({ name: `Copy of ${name}`, ...props })
+              }}
+            >
+              <IoMdCopy size="1.2em" />
+            </Button>
+          </div>
         </div>
         <AgentAdapterPicker
           className="grid grid-cols-[15ch,auto,auto] auto-rows-auto gap-4"
