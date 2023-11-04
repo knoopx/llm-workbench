@@ -33,7 +33,7 @@ export const SliderCheckbox = observer(
           onCheckedChange(true)
           onChange(v[0])
         }}
-        className="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4"
+        className="ml-6 [&_[role=slider]]:h-4 [&_[role=slider]]:w-4"
         aria-label={label}
         {...props}
       />
