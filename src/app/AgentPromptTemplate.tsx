@@ -10,8 +10,8 @@ export const AgentPromptTemplate: React.FC<{
     <AutoTextarea
       className="flex-auto font-mono text-xs whitespace-pre"
       value={agent.promptTemplate}
-      onChange={(prompt_template) =>
-        agent.update({ promptTemplate: prompt_template })
+      onChange={(e) =>
+        agent.update({ promptTemplate: e.target.value })
       }
     />
   )

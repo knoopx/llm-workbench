@@ -79,8 +79,8 @@ const AgentConversation = observer(({ agent }) => (
 
               <AutoTextarea
                 value={template.content}
-                onChange={(content) => {
-                  template.update({ content })
+                onChange={(e) => {
+                  template.update({ content: e.target.value })
                 }}
               />
             </div>

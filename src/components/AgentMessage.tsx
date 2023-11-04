@@ -24,8 +24,8 @@ export const AgentMessage = observer(({ message, ...rest }) => (
         placeholder="Message..."
         value={message.content}
         category="message"
-        onChange={(content) => {
-          message.update({ content })
+        onChange={(e) => {
+          message.update({ content: e.target.value })
         }}
       />
     </div>
