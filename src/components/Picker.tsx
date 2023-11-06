@@ -17,6 +17,8 @@ export const Picker = observer(
     onChange: (option: string) => void
     options: { key: string; value: string }[]
   }) => {
+    options = options.sort((a, b) => a.value.localeCompare(b.value))
+
     return (
       <Select
         {...props}
