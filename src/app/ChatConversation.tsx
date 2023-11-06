@@ -8,11 +8,27 @@ import { VscDebugContinue, VscDebugStart, VscDebugStop } from "react-icons/vsc"
 import { BiArrowToTop } from "react-icons/bi"
 import { cn } from "@/lib/utils"
 import { AutoTextarea } from "../components/AutoTextarea"
+import { html2md } from "@/lib/utils"
+import { extractHTML } from "@/lib/utils"
 
 const PromptInput = observer(() => {
   const {
     state: { resource: chat },
   } = useStore()
+
+  const handleInput = async (input: string) => {
+    if (input.startsWith("http")) {
+      const body = await extractHTML(input)
+      const md = html2md(body?.outerHTML)
+      chat.addMessage({
+        content: md,
+        role: "user",
+      })
+    } else {
+      chat.send(input)
+    }
+  }
+
   return (
     <AutoTextarea
       className="w-full"
@@ -21,8 +37,8 @@ const PromptInput = observer(() => {
       onKeyDown={(e) => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault()
-          chat.send(e.target.value)
           chat.update({ prompt: "" })
+          handleInput(e.target.value)
         }
       }}
       autoFocus
@@ -50,8 +66,7 @@ export const ChatConversation = observer(({ chat }) => {
         )}
       >
         <div className="space-x-1">
-          {chat.abortController ? (
-            <>
+          {chat.isRunning ? (
               <Button
                 onClick={() => {
                   chat.abort()
@@ -59,7 +74,6 @@ export const ChatConversation = observer(({ chat }) => {
               >
                 <VscDebugStop size="1.5em" />
               </Button>
-            </>
           ) : (
             <>
               <Button onClick={chat.regenerate}>

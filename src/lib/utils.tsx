@@ -1,5 +1,12 @@
-import { type ClassValue, clsx } from "clsx"
+import rehypeParse from "rehype-parse"
+import rehypeRemark from "rehype-remark"
+import remarkStringify from "remark-stringify"
+import remarkMath from "remark-math"
+import remarkGfm from "remark-gfm"
+import remarkEmoji from "remark-emoji"
 import { twMerge } from "tailwind-merge"
+import { unified } from "unified"
+import { type ClassValue, clsx } from "clsx"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -42,7 +49,6 @@ export function wrapArray(value: any) {
   return Array.isArray(value) ? value : [value]
 }
 
-
 export function registerTag(
   engine,
   key: string,
@@ -66,4 +72,50 @@ export function registerTag(
       }
     },
   )
+}
+export function html2md(data: any) {
+  return unified()
+    .use(rehypeParse)
+    .use(rehypeRemark)
+    .use(remarkGfm)
+    .use(remarkEmoji)
+    .use(remarkMath)
+    .use(remarkStringify)
+    .processSync(data).value
+}
+
+export async function extractHTML(input: string) {
+  const url = new URL(input)
+  const response = await fetch(input)
+  const html = await response.text()
+  const doc = new DOMParser().parseFromString(html, "text/html")
+  const body = doc.querySelector("body")
+
+  function removeComments(node: Node) {
+    if (node.nodeType === Node.COMMENT_NODE) {
+      node.parentNode?.removeChild(node)
+    } else {
+      for (let i = 0; i < node.childNodes.length; i++) {
+        removeComments(node.childNodes[i])
+      }
+    }
+  }
+
+  removeComments(body)
+
+  body?.querySelectorAll("img").forEach((img) => {
+    const src = img.getAttribute("src")
+    if (!src?.startsWith("http")) {
+      img.setAttribute("src", url.origin + src)
+    }
+  })
+
+  body?.querySelectorAll("a").forEach((a) => {
+    const href = a.getAttribute("href")
+    if (!href?.startsWith("http")) {
+      a.setAttribute("href", url.origin + href)
+    }
+  })
+
+  return body
 }
