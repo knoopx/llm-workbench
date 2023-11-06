@@ -2,7 +2,7 @@ import { observer } from "mobx-react"
 import { Button } from "../components/ui/button"
 import { IoMdTrash, IoMdRefresh } from "react-icons/io"
 import { ScrollArea } from "../components/ui/scroll-area"
-import { Message } from "./ChatConversationMessage"
+import { ChatConversationMessage } from "./ChatConversationMessage"
 import { useStore } from "@/store"
 import { VscDebugContinue, VscDebugStart, VscDebugStop } from "react-icons/vsc"
 import { BiArrowToTop } from "react-icons/bi"
@@ -53,7 +53,7 @@ export const ChatConversation = observer(({ chat }) => {
       <ScrollArea className="flex-auto">
         <div className="flex flex-auto flex-col items-center">
           {chat.messages.map((message, i) => (
-            <Message key={i} message={message} />
+            <ChatConversationMessage key={i} message={message} />
           ))}
         </div>
       </ScrollArea>
