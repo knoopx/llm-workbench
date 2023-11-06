@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils"
 import { Textarea } from "@/components/ui/textarea"
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, PropsWithoutRef } from "react"
 import { observer } from "mobx-react"
 
 export const AutoTextarea = observer(
@@ -10,13 +10,11 @@ export const AutoTextarea = observer(
     onChange,
     maxRows = 8,
     ...rest
-  }: {
-    className?: string
+  }: PropsWithoutRef<HTMLTextAreaElement> & {
     maxRows?: number
-    value: string
     onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
   }) => {
-    const ref = useRef(null)
+    const ref = useRef<HTMLTextAreaElement>(null)
 
     useEffect(() => {
       if (!ref.current) return
@@ -30,7 +28,10 @@ export const AutoTextarea = observer(
     return (
       <Textarea
         ref={ref}
-        className={cn("font-mono text-xs whitespace-pre resize-none", className)}
+        className={cn(
+          "font-mono text-xs whitespace-pre resize-none",
+          className,
+        )}
         value={value}
         onChange={onChange}
         {...rest}
