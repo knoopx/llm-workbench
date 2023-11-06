@@ -52,7 +52,7 @@ systemctl restart ollama
 ### 🤖 Agents
 
 - **Connection Adapters**: We support various connection adapters, including Ollama and HuggingFace TGI (local or remote).
-- **Complete generation control**: Customize the agent behavior with system prompts, conversation history, and chat prompt templates.
+- **Complete generation control**: Customize the agent behavior with system prompts, conversation history, and chat prompt templates using [liquidjs](https://liquidjs.com/).
 
 # Future Ideas
 
