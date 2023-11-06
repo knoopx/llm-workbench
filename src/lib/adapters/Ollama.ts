@@ -103,12 +103,13 @@ export class OllamaAdapter {
     const reader = response.body.getReader()
     const decoder = new TextDecoder()
 
+    let remainder = ""
     while (true) {
       const { done, value } = await reader.read()
       if (done) {
         break
       }
-      const chunks = decoder.decode(value).split("\n")
+      const chunks = (remainder + decoder.decode(value)).split("\n")
       for (const chunk of chunks) {
         if (!chunk) {
           continue
@@ -120,6 +121,10 @@ export class OllamaAdapter {
           }
           yield json.response
         } catch (e) {
+          if (e instanceof SyntaxError) {
+            remainder += chunk
+            continue
+          }
           console.error(chunk)
           throw e
         }
