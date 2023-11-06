@@ -52,7 +52,7 @@ async function extractWithPDFParse(file: File) {
   return text
 }
 
-async function _processFile(file: File) {
+export async function processFile(file: File) {
   if (file.name.endsWith(".docx")) {
     return extractWithMammoth(file)
   } else if (file.name.endsWith(".pdf")) {
@@ -62,36 +62,31 @@ async function _processFile(file: File) {
   }
 }
 
-function stripNonPrintableAndNormalize(
-  text: string,
-  stripSurrogatesAndFormats = true,
-) {
-  // strip control chars. optionally, keep surrogates and formats
-  if (stripSurrogatesAndFormats) {
-    // text = text.replace(/\p{C}/gu, "")
-  } else {
-    // text = text.replace(/\p{Cc}/gu, "")
-    text = text.replace(/\p{Co}/gu, "")
-    text = text.replace(/\p{Cn}/gu, "")
-  }
+// function stripNonPrintableAndNormalize(
+//   text: string,
+//   stripSurrogatesAndFormats = true,
+// ) {
+//   // strip control chars. optionally, keep surrogates and formats
+//   if (stripSurrogatesAndFormats) {
+//     // text = text.replace(/\p{C}/gu, "")
+//   } else {
+//     // text = text.replace(/\p{Cc}/gu, "")
+//     text = text.replace(/\p{Co}/gu, "")
+//     text = text.replace(/\p{Cn}/gu, "")
+//   }
 
-  // other common tasks are to normalize newlines and other whitespace
+//   // other common tasks are to normalize newlines and other whitespace
 
-  // normalize newline
-  text = text.replace(/\n\r/g, "\n")
-  text = text.replace(/\p{Zl}/gu, "\n")
-  text = text.replace(/\p{Zp}/gu, "\n")
+//   // normalize newline
+//   text = text.replace(/\n\r/g, "\n")
+//   text = text.replace(/\p{Zl}/gu, "\n")
+//   text = text.replace(/\p{Zp}/gu, "\n")
 
-  // normalize space
-  return text.replace(/\p{Zs}/gu, " ")
-}
+//   // normalize space
+//   return text.replace(/\p{Zs}/gu, " ")
+// }
 
-async function processFile(file: File) {
-  const text = await _processFile(file)
-  return stripNonPrintableAndNormalize(text)
-}
-
-export async function processFiles(files: FileList) {
-  const results = await Promise.all(Array.from(files).map(processFile))
-  return results.filter(Boolean)
-}
+// export async function processFile(file: File) {
+//   const text = await _processFile(file)
+//   return stripNonPrintableAndNormalize(text)
+// }

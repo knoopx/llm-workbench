@@ -16,7 +16,7 @@ import "highlight.js/styles/github-dark.css"
 export const Message = observer(({ message }) => {
   const ref = useRef(null)
 
-  const { role, content, isEmpty, open } = message
+  const { role, content, isEmpty, chat } = message
 
   useEffect(() => {
     const scrollContainer = ref.current?.closest(
@@ -24,7 +24,7 @@ export const Message = observer(({ message }) => {
     )
     scrollContainer?.scrollTo({
       top: scrollContainer.scrollHeight,
-      behavior: "smooth",
+      // behavior: "smooth",
     })
   }, [content])
 
@@ -38,7 +38,7 @@ export const Message = observer(({ message }) => {
               "dark:bg-white dark:text-black bg-black text-white font-extrabold ":
                 role === "assistant",
               "text-muted-foreground": role === "user",
-              "animate-pulse": role === "assistant" && open,
+              "animate-pulse": role === "assistant" && chat.isRunning,
             },
           )}
         >
@@ -54,7 +54,7 @@ export const Message = observer(({ message }) => {
         {isEmpty ? (
           <div
             className={cn("min-w-[65ch]", {
-              "animate-pulse": message.open,
+              "animate-pulse": message.chat.isRunning,
             })}
           >
             ...

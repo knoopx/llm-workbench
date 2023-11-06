@@ -1,58 +1,59 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { useStore } from "@/store"
-import { BsChatRightTextFill } from "react-icons/bs"
+import { BsChatRightText } from "react-icons/bs"
 import { IoMdAdd } from "react-icons/io"
 import { observer } from "mobx-react"
-import { Instance } from "mobx-state-tree"
-import { Chat } from "@/store/chat"
 import { IoTrashOutline } from "react-icons/io5"
+import { SidebarItem } from "@/components/SidebarItem"
 
-export const ChatList = observer(
-  ({ chats }: { chats: Instance<typeof Chat>[] }) => {
-    const store = useStore()
-    return (
-      <div className="flex-auto space-y-4">
-        <div className="px-3 py-2">
-          <h2 className="flex mb-2 text-lg font-semibold tracking-tight justify-between items-center">
-            <span>Chats</span>
-            <Button size="icon" variant="ghost" onClick={store.newChat}>
-              <IoMdAdd />
-            </Button>
-          </h2>
+export const ChatList = observer(() => {
+  const { newChat, removeChat, chats } = useStore()
 
-          {chats.map((chat) => (
-            <button
-              key={chat.id}
-              className={cn(
-                "flex items-center w-full text-sm px-4 py-2 rounded",
-                {
-                  "bg-secondary": store.activeChat === chat,
-                },
-              )}
-              onClick={() => store.setActiveChat(chat)}
-            >
-              <span className="flex justify-left items-center space-x-3 mr-3 overflow-hidden">
-                <BsChatRightTextFill className="flex-none" size="1em" />
-                <span className="font-medium truncate">{chat.model}</span>
+  // sort chats by recent date
+  const sorted = chats
+    .slice()
+    .sort((a, b) => b.date?.getTime() - a.date?.getTime())
 
-                <span className="whitespace-nowrap text-ellipsis truncate italic text-muted-foreground">
-                  {chat.title}
-                </span>
-              </span>
+  return (
+    <div className="flex-auto space-y-4">
+      <div className="flex flex-col px-3 py-2">
+        <h2 className="flex mb-2 text-lg font-semibold tracking-tight justify-between items-center">
+          <div>Chats</div>
+          <Button size="icon" variant="ghost" onClick={newChat}>
+            <IoMdAdd />
+          </Button>
+        </h2>
+
+        {sorted.map((chat) => (
+          <SidebarItem
+            key={chat.id}
+            route="chat"
+            resource={chat}
+            icon={BsChatRightText}
+            actions={
               <a
                 className="ml-auto"
                 onClick={(e) => {
                   e.stopPropagation()
-                  store.removeChat(chat)
+                  removeChat(chat)
                 }}
               >
                 <IoTrashOutline />
               </a>
-            </button>
-          ))}
-        </div>
+            }
+          >
+            <div className="flex justify-left items-center space-x-3 mr-3 overflow-hidden">
+              {/* {chat.agent && (
+                <div className="font-medium truncate">{chat.agent?.name}</div>
+              )} */}
+              <div className="whitespace-nowrap text-ellipsis truncate italic text-muted-foreground font-normal">
+                {chat.title}
+              </div>
+            </div>
+          </SidebarItem>
+        ))}
       </div>
-    )
-  },
-)
+    </div>
+  )
+})
