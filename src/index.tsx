@@ -1,23 +1,40 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
-import App from "./app/App"
+import AppView from "./app/AppView"
 import { Store, StoreContext } from "./store"
 import { ThemeProvider } from "./components/ThemeProvider"
 import { onSnapshot } from "mobx-state-tree"
 import "./index.css"
 
-let data = {}
-const raw = window.localStorage.getItem("store")
-if (raw) {
-  data = JSON.parse(window.localStorage.getItem("store")!)
+function loadStore() {
+  let data = {}
+  const raw = window.localStorage.getItem("store")
+  if (raw) {
+    data = JSON.parse(window.localStorage.getItem("store")!)
+  }
+  try {
+    return Store.create(data)
+  } catch (e) {
+    console.error(e)
+    if (
+      window.confirm(
+        "Could not to load application data from local storage, clear it?",
+      )
+    ) {
+      window.localStorage.removeItem("store")
+      return Store.create({})
+    }
+
+    throw e
+  }
 }
-const store = Store.create(data)
+const store = loadStore()
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <StoreContext.Provider value={store}>
-      <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
-        <App />
+      <ThemeProvider storageKey="ui-theme">
+        <AppView />
       </ThemeProvider>
     </StoreContext.Provider>
   </React.StrictMode>,

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { BsFillLightbulbFill, BsLightbulb } from "react-icons/bs"
 import { useTheme } from "@/components/ThemeProvider"
 
-export const ToggleDarkButton = () => {
+export const ToggleDarkButton = ({ size = "1em" }) => {
   const theme = useTheme()
 
   const toggleTheme = () => {
@@ -12,9 +12,9 @@ export const ToggleDarkButton = () => {
   return (
     <Button variant="ghost" size="icon" onClick={toggleTheme}>
       {theme.theme == "dark" ? (
-        <BsFillLightbulbFill size="1.5em" />
+        <BsFillLightbulbFill size={size} />
       ) : (
-        <BsLightbulb size="1.5em" />
+        <BsLightbulb size={size} />
       )}
     </Button>
   )

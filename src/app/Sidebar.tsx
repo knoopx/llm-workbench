@@ -1,77 +1,24 @@
-import { cn } from "@/lib/utils"
 import { useStore } from "@/store"
 import { observer } from "mobx-react"
 import { ChatList } from "./SidebarChatList"
-import { Input } from "@/components/ui/input"
-import { IoIosFlash } from "react-icons/io"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { MdEdit } from "react-icons/md"
-import { FaNetworkWired } from "react-icons/fa"
-
-const ConnectButton = observer(() => {
-  const store = useStore()
+import { AgentList } from "./SidebarAgentList"
+import { SidebarItem } from "../components/SidebarItem"
+import { SidebarSection } from "../components/SidebarSection"
+import { ToggleDarkButton } from "@/components/ToggleDarkButton"
+import { VscTools } from "react-icons/vsc"
+export const Sidebar = observer(() => {
+  const { agents, chats } = useStore()
 
   return (
-    <Button
-      size="sm"
-      onClick={() => {
-        store?.refreshModels()
-      }}
-    >
-      <IoIosFlash size="1.2em" />
-    </Button>
+    <div className={"flex flex-col divide-y-1 border-r-1"}>
+      <ChatList chats={chats} />
+
+      <SidebarSection title="Tools" actions={<ToggleDarkButton />}>
+        <SidebarItem route="playground" icon={VscTools}>
+          Playground
+        </SidebarItem>
+      </SidebarSection>
+      <AgentList agents={agents} />
+    </div>
   )
 })
-
-const DisconnectButton = observer(() => {
-  const store = useStore()
-
-  return (
-    <Button
-      size="sm"
-      variant="ghost"
-      onClick={() => {
-        store?.setConnected(false)
-      }}
-    >
-      <MdEdit size="1.2em" />
-    </Button>
-  )
-})
-
-export const Sidebar = observer(
-  ({ className, chats }: { className?: string; chats: any[] }) => {
-    const store = useStore()
-
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault()
-      store?.refreshModels()
-    }
-
-    return (
-      <form
-        onSubmit={handleSubmit}
-        className={cn("flex flex-col divide-y-1 border-r-1", className)}
-      >
-        <ChatList chats={chats} />
-        <div className="flex justify-between items-center space-x-2 px-3 py-2">
-          {store?.connected ? (
-            <Label className="text-muted-foreground flex space-x-2">
-              <FaNetworkWired />
-              <span>{store.endpoint}</span>
-            </Label>
-          ) : (
-            <Input
-              className="h-auto"
-              value={store.endpoint}
-              onChange={store.setEndpoint}
-            />
-          )}
-
-          {store?.connected ? <DisconnectButton /> : <ConnectButton />}
-        </div>
-      </form>
-    )
-  },
-)
