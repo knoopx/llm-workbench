@@ -106,8 +106,6 @@ const MessageAvatar: React.FC<{
 ))
 
 export const ChatConversationMessage = observer(({ message }) => {
-  const ref = useRef(null)
-
   const { role, content, isEmpty, chat } = message
 
   const state = useLocalStore(() => ({
@@ -116,18 +114,6 @@ export const ChatConversationMessage = observer(({ message }) => {
       state.isEditing = value
     },
   }))
-
-  useEffect(() => {
-    if (message.chat.isRunning) {
-      const scrollContainer = ref.current?.closest(
-        "[data-radix-scroll-area-viewport]",
-      )
-      scrollContainer?.scrollTo({
-        top: scrollContainer.scrollHeight,
-        // behavior: "smooth",
-      })
-    }
-  }, [content])
 
   return (
     <ActionOverlay
@@ -160,7 +146,7 @@ export const ChatConversationMessage = observer(({ message }) => {
         </MessageDropdownMenu>
       }
     >
-      <div ref={ref} className="flex flex-auto space-x-4 px-8 py-4 w-full">
+      <div className="flex flex-auto space-x-4 px-8 py-4 w-full">
         <MessageAvatar chat={chat} role={role} />
         <div className="flex flex-auto w-[65ch]">
           {state.isEditing ? (
