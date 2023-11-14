@@ -13,7 +13,7 @@ export const PlaygroundView = observer(() => {
   }, 200)
 
   return (
-    <div className="flex-auto grid grid-cols-[auto,40ch] divide-x-1">
+    <div className="flex-auto grid grid-cols-[auto,50ch] divide-x-1">
       <div className="flex flex-col p-8">
         <div className="flex-auto relative font-mono">
           <textarea
