@@ -1,10 +1,9 @@
-import { observer } from "mobx-react";
+import { observer } from "mobx-react"
 import {
   AccordionContent,
   AccordionItem,
-  AccordionTrigger
-} from "@radix-ui/react-accordion";
-
+  AccordionTrigger,
+} from "@radix-ui/react-accordion"
 
 export const AppAccordionItem = observer(
   ({ id, icon: Icon, title, children }) => (
@@ -17,5 +16,5 @@ export const AppAccordionItem = observer(
         <div className="flex flex-col py-4 space-y-4">{children}</div>
       </AccordionContent>
     </AccordionItem>
-  )
-);
+  ),
+)

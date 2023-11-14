@@ -1,6 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
-import AppView from "./app/AppView"
+import AppShell from "./app/AppShell"
 import { Store, StoreContext } from "./store"
 import { ThemeProvider } from "./components/ThemeProvider"
 import { onSnapshot } from "mobx-state-tree"
@@ -34,7 +34,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <StoreContext.Provider value={store}>
       <ThemeProvider storageKey="ui-theme">
-        <AppView />
+        <AppShell />
       </ThemeProvider>
     </StoreContext.Provider>
   </React.StrictMode>,

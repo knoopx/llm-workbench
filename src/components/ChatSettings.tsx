@@ -13,7 +13,7 @@ import { PiTextbox } from "react-icons/pi"
 import { Button } from "@/components/ui/button"
 import { AutoTextarea } from "./AutoTextarea"
 import { AgentPicker } from "./AgentPicker"
-import { AttachmentsAccordionItem } from "@/app/AttachmentsAccordionItem"
+import { AttachmentsAccordionItem } from "@/components/AttachmentsAccordionItem"
 import {
   Accordion,
   AccordionContent,

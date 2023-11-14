@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input"
 import { IoMdAdd, IoMdTrash } from "react-icons/io"
 import { Button } from "@/components/ui/button"
 import { HiMiniVariable } from "react-icons/hi2"
-import { AppAccordionItem } from "../app/AppAccordionItem"
+import { AppAccordionItem } from "./AppAccordionItem"
 
 export const VariablesAccordionItem = observer(() => {
   const store = useStore()

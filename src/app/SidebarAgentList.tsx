@@ -42,7 +42,11 @@ export const AgentList = observer(
                 </a>
               }
             >
-              {agent.name ? agent.name : <span className="italic">(No Name)</span>}
+              {agent.name ? (
+                agent.name
+              ) : (
+                <span className="italic">(No Name)</span>
+              )}
             </SidebarItem>
           ))}
         </div>

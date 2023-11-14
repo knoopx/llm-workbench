@@ -1,7 +1,7 @@
 import Markdown from "react-markdown"
 import { cn } from "@/lib/utils"
 import { TbPrompt } from "react-icons/tb"
-import { cloneElement, useEffect, useRef } from "react"
+import { cloneElement } from "react"
 import { observer, useLocalStore } from "mobx-react"
 
 import remarkMath from "remark-math"

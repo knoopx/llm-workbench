@@ -1,68 +1,41 @@
 import { observer } from "mobx-react"
-import { Button } from "../components/ui/button"
+import { Button } from "./ui/button"
 import { IoMdTrash, IoMdRefresh } from "react-icons/io"
-import { ScrollArea } from "../components/ui/scroll-area"
+import { ScrollArea } from "./ui/scroll-area"
 import { ChatConversationMessage } from "./ChatConversationMessage"
-import { useStore } from "@/store"
 import { VscDebugContinue, VscDebugStart, VscDebugStop } from "react-icons/vsc"
 import { BiArrowToTop } from "react-icons/bi"
 import { cn } from "@/lib/utils"
-import { AutoTextarea } from "../components/AutoTextarea"
-import { html2md } from "@/lib/utils"
-import { extractHTML } from "@/lib/utils"
 import { useEffect, useRef } from "react"
 import { Instance } from "mobx-state-tree"
 import { Chat } from "@/store/Chat"
-import { toJS } from "mobx"
+import { reaction, toJS } from "mobx"
+import { ChatUserInput } from "./PromptInput"
+import { animate } from "@/lib/animation"
 
-const PromptInput = observer(() => {
-  const {
-    state: { resource: chat },
-  } = useStore()
-
-  const handleInput = async (input: string) => {
-    if (input.startsWith("http")) {
-      const body = await extractHTML(input)
-      const md = html2md(body?.outerHTML)
-      chat.addMessage({
-        content: md,
-        role: "user",
-      })
-    } else {
-      chat.send(input)
-    }
-  }
-
-  return (
-    <AutoTextarea
-      className="w-full"
-      value={chat.prompt}
-      onChange={(e) => chat.update({ prompt: e.target.value })}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-          e.preventDefault()
-          chat.update({ prompt: "" })
-          handleInput(e.target.value)
-        }
-      }}
-      autoFocus
-      placeholder="Enter text..."
-    />
-  )
-})
+const useReaction = (observe: () => any, fn: () => void, deps: any[] = []) => {
+  useEffect(() => {
+    return reaction(observe, fn)
+  }, deps)
+}
 
 export const ChatConversation = observer(
   ({ chat }: { chat: Instance<typeof Chat> }) => {
     const ref = useRef<HTMLDivElement>(null)
-    useEffect(() => {
+
+    const scrollToBottom = () => {
       const scrollContainer = ref.current?.querySelector(
         "[data-radix-scroll-area-viewport]",
       )
-      scrollContainer?.scrollTo({
-        top: scrollContainer.scrollHeight,
-        // behavior: "smooth",
-      })
-    }, [toJS(chat.assistantMessages)])
+      if (!scrollContainer) return
+
+      if (scrollContainer.scrollHeight > scrollContainer.scrollTop) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight
+      }
+    }
+
+    useEffect(() => scrollToBottom(), [])
+    useReaction(() => chat.lastAssistantMessage?.content, scrollToBottom)
 
     return (
       <div className="flex flex-col">
@@ -110,7 +83,7 @@ export const ChatConversation = observer(
               </>
             )}
           </div>
-          <PromptInput />
+          <ChatUserInput chat={chat} />
         </div>
       </div>
     )

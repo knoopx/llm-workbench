@@ -3,9 +3,8 @@ import { AgentView } from "./AgentView"
 import { ChatView } from "./ChatView"
 import { observer } from "mobx-react"
 import { PlaygroundView } from "./PlaygroundView"
-import { ScrollArea } from "@radix-ui/react-scroll-area"
 
-export const Router = observer(() => {
+export const ActiveRoute = observer(() => {
   const {
     state: { route, resource },
   } = useStore()

@@ -1,7 +1,7 @@
 import { AgentGenerationParams } from "@/components/AgentGenerationParams"
 import { useStore } from "@/store"
 import { observer } from "mobx-react"
-import { AgentAdapterPicker } from "./AgentView"
+import { AgentAdapterPicker } from "../components/AgentAdapterPicker"
 import { useDebouncedCallback } from "use-debounce"
 export const PlaygroundView = observer(() => {
   const {
@@ -38,11 +38,6 @@ export const PlaygroundView = observer(() => {
               debounced()
             }}
           />
-          {/* <textarea
-            disabled
-            className="absolute inset-0 text-muted-foreground pointer-events-none resize-none outline-none bg-transparent"
-            value={agent.promptTemplate + output}
-          /> */}
           <div
             className="absolute inset-0 text-muted-foreground pointer-events-none"
             style={{
