@@ -62,7 +62,7 @@ export const ChatConversation = observer(
         top: scrollContainer.scrollHeight,
         // behavior: "smooth",
       })
-    }, [toJS(chat.messages)])
+    }, [toJS(chat.assistantMessages)])
 
     return (
       <div className="flex flex-col">
