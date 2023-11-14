@@ -1,17 +1,6 @@
-import {
-  toPromise,
-  TagToken,
-  Context,
-  Emitter,
-  TopLevelToken,
-  Value,
-  Tag,
-  Liquid,
-} from "liquidjs"
-
 import MiniSearch from "minisearch"
 
-import { destroy, detach, isAlive, types as t } from "mobx-state-tree"
+import { destroy, isAlive, types as t } from "mobx-state-tree"
 import { randomId } from "@/lib/utils"
 import { Message } from "./Message"
 import { Instance } from "mobx-state-tree"
