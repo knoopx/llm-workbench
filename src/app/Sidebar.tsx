@@ -10,7 +10,7 @@ export const Sidebar = observer(() => {
   const { agents, chats } = useStore()
 
   return (
-    <div className={"flex flex-col divide-y-1 border-r-1"}>
+    <div className={"flex flex-col divide-y-1 border-r-1 overflow-auto"}>
       <ChatList chats={chats} />
 
       <SidebarSection title="Tools" actions={<ToggleDarkButton />}>
