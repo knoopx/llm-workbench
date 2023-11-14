@@ -83,6 +83,7 @@ export const Agent = t
     },
     async renderTemplate(template: string, extra = {}) {
       const locals = {
+        time: new Date().toLocaleString(),
         ...extra,
         ...Object.fromEntries(self.variables.map((v) => [v.key, v.value])),
       }
