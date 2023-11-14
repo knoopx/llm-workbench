@@ -13,10 +13,10 @@ export const DEFAULT_AGENTS = [
       repeat_last_n: -1,
       repeat_penalty: 1.18,
       num_predict: -2,
-      num_ctx: 2048,
+      num_ctx: 4096,
       stop: ["</s>", "<|system|>", "<|user|>", "<|assistant|>"],
     },
-    checkedOptions: [],
+    checkedOptions: ["num_ctx", "stop"],
     promptTemplate:
       '{%- for message in messages -%}\n{% include "message" %}\n{% endfor -%}\n<|assistant|>\n',
     messages: [
