@@ -26,7 +26,10 @@ export const Select = observer(
     onChange: (value: string) => void
     placeholder?: string
   }) => {
-    const sorted = options?.slice().sort((a, b) => a.key.localeCompare(b.key))
+    const sorted = options
+      ?.slice()
+      .filter((x) => x.value)
+      .sort((a, b) => a.key.localeCompare(b.key))
 
     return (
       <Base onValueChange={onChange} {...props}>
