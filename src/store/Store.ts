@@ -14,7 +14,14 @@ export const Store = t
     state: t.optional(State, {}),
     playground: t.optional(Playground, {}),
   })
-
+  .views((self) => ({
+    get lastChat() {
+      return self.chats[self.chats.length - 1]
+    },
+    get lastUsedAgent() {
+      return this.lastChat?.agent
+    },
+  }))
   .actions((self) => ({
     addChat(chat: Instance<typeof Chat> = {} as Instance<typeof Chat>) {
       self.chats.push(chat)
@@ -25,7 +32,7 @@ export const Store = t
       self.state.navigate(self.agents[self.agents.length - 1])
     },
     newChat() {
-      this.addChat({ agent: self?.agents[0] })
+      this.addChat({ agent: self.lastUsedAgent })
     },
     newAgent() {
       this.addAgent()
