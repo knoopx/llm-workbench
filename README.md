@@ -2,6 +2,12 @@
 
 LLM Workbench is a user-friendly web interface designed for large language models, built with React and MobX, styled using Shadcn UI. It serves as a one-stop solution for all your large language model needs, enabling you to harness the power of free, open-source language models on your local machine.
 
+![Chat](https://github.com/knoopx/llm-workbench/assets/100993/3054a0aa-f356-44b8-97f4-5f479c8fbeb8)
+![Playground](https://github.com/knoopx/llm-workbench/assets/100993/1b2817ac-a783-4fb0-b0e7-b81e2643b6ae)
+![Agent](https://github.com/knoopx/llm-workbench/assets/100993/308f366e-3389-468d-a95c-b4ecf618dd22)
+
+
+
 ### Getting Started
 
 To start your journey, choose between a HuggingFace Text Inference Generation Endpoint or Ollama.
