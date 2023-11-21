@@ -17,7 +17,7 @@ export const AgentPicker = observer(
     return (
       <Picker
         {...props}
-        value={chat.agent.name}
+        value={chat.agent?.name}
         options={options}
         onChange={(agent) => {
           chat.update({ agent: agents.find((a) => a.name === agent) })
